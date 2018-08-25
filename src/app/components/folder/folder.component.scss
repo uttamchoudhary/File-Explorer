@@ -1,0 +1,22 @@
+.folder-structure {
+    list-style-type: none;
+    li {
+        .folder {
+            .fa-folder,
+            .fa-folder-open {
+                color: #83CADF;
+            }
+        }
+        .file {
+            .fa-file {
+                color: #8FA4A9;
+                font-size: 14px;
+                font-weight: 400;
+            }
+        }
+        .folder-name,
+        .file-name {
+            margin-left: 5px;
+        }
+    }
+}

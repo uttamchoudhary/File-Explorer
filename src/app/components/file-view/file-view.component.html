@@ -1,0 +1,7 @@
+<div *ngIf="file">
+    <p>Name : {{file.file_name}}</p>
+    <p>Type : {{file.type}}</p>
+</div>
+<div *ngIf="!file">
+    <p>Select a file to open</p>
+</div>

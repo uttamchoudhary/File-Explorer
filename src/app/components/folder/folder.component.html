@@ -1,0 +1,19 @@
+<ul *ngIf="files" class="folder-structure" [ngClass]="{'m-l-15' : level !== 0}">
+    <li *ngFor="let file of files">
+        <ng-container *ngIf="file.children">
+            <div class="folder" (click)="file.open=!!!file.open">
+                <i class="fa fa-folder" aria-hidden="true" [ngClass]="{'fa-folder-open':file.open}"></i>
+                <span class="folder-name">{{file.title}}</span>
+            </div>
+            <div [hidden]="!file.open">
+                <Folder [files]="file.children" [level]="level+1"></Folder>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="!file.children">
+            <div class="file" (click)="openFile(file)">
+                <i class="fa fa-file" aria-hidden="true"></i>
+                <span class="file-name">{{file.file_name}}</span>
+            </div>
+        </ng-container>
+    </li>
+</ul>

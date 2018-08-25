@@ -1,1 +1,39 @@
 /* You can add global styles to this file, and also import other style files */
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+ ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+ ::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+ ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.m-l-15 {
+    margin-left: 15px;
+}
+
+.explorer.container {
+    border: 1px solid #F1EBEA;
+    box-shadow: 2px #F1EBEA;
+    .resizable {
+        >div {
+            &:first-child {
+                background: #F1EBEA !important
+            }
+        }
+    }
+}
