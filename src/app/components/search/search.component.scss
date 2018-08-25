@@ -1,0 +1,36 @@
+.search-widget {
+    width: 300px;
+    overflow: hidden;
+    .search-box {
+        padding: 12px 18px;
+        border-radius: 30px;
+        border: 2px solid #C6C0BF;
+        color: #B2AEAD;
+        input {
+            border: none;
+            outline: none;
+            width: 90%;
+        }
+    }
+    .search-results {
+        list-style-type: none;
+        max-height: 200px;
+        overflow: auto;
+        background: #F1EBEA;
+        li {
+            overflow: hidden;
+            padding: 5px 10px;
+            .fa {
+                margin-right: 10px;
+            }
+            &:hover {
+                color: #007bff !important;
+                background: #fff;
+            }
+            .file-path {
+                text-overflow: ellipsis;
+                font-size: 10px;
+            }
+        }
+    }
+}

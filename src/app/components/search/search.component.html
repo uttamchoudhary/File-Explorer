@@ -1,0 +1,16 @@
+<div class="search-widget">
+    <div class="search-box">
+        <input type="text" [formControl]="searchTerm" placeholder="Search file here">
+        <i class="fa fa-search" aria-hidden="true"></i>
+    </div>
+    <ul class="search-results">
+        <li *ngFor="let file of suggestions" (click)="openFile(file)">
+
+            <i class="fa fa-file"></i>
+            <span>{{file.name}}</span>
+            <p class="text-muted file-path m-0">{{file.file_path}}</p>
+        </li>
+        <li *ngIf="!suggestions.length && searchTerm.value"><span>No file found</span></li>
+    </ul>
+
+</div>

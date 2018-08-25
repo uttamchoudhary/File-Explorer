@@ -1,7 +1,9 @@
 import { Component, OnInit, ViewContainerRef } from "@angular/core";
+
 import { ExplorerService } from "./services/explorer.service";
 import { LoaderService } from "./services/loader.service";
 import { ContextMenuService } from "./services/context-menu.service";
+
 
 @Component({
   selector: "app-root",
@@ -11,6 +13,7 @@ import { ContextMenuService } from "./services/context-menu.service";
 export class AppComponent implements OnInit {
   public level = 0;
   public tabs;
+
 
   constructor(
     private _explorer: ExplorerService,
@@ -45,9 +48,12 @@ export class AppComponent implements OnInit {
       this.tabs[1].list = res;
       this.loader.stop();
     });
+    
   }
 
   openTab(tab){
     this.tabs.forEach(item => item.open = tab.title !== item.title ? false : !tab.open);
   }
+
+  
 }

@@ -8,39 +8,37 @@ import { ContextMenuService } from "../../services/context-menu.service";
   styleUrls: ["./folder.component.scss"]
 })
 export class FolderComponent implements OnInit {
-  @Input()
-  files;
-  @Input()
-  level;
+  @Input() files;
+  @Input() level;
 
   options = {
     file: [
       {
         text: "Open",
         action: this.doAction,
-        icon: 'fa-file'
+        icon: "fa-file"
       },
       {
         text: "Delete",
         action: this.doAction,
-        icon: 'fa-trash'
+        icon: "fa-trash"
       }
     ],
     folder: [
       {
         text: "Add File",
         action: this.doAction,
-        icon: 'fa-file'
+        icon: "fa-file"
       },
       {
         text: "Add Folder",
         action: this.doAction,
-        icon: 'fa-folder'
+        icon: "fa-folder"
       },
       {
         text: "Delete",
         action: this.doAction,
-        icon: 'fa-trash'        
+        icon: "fa-trash"
       }
     ]
   };

@@ -9,6 +9,7 @@ import { FolderComponent } from './components/folder/folder.component';
 import { FileViewComponent } from './components/file-view/file-view.component';
 import { LoaderComponent } from './components/loader/loader.component';
 import { ContextMenuComponent } from './components/context-menu/context-menu.component';
+import { SearchComponent } from './components/search/search.component';
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import { ContextMenuComponent } from './components/context-menu/context-menu.com
     FolderComponent,
     FileViewComponent,
     LoaderComponent,
-    ContextMenuComponent
+    ContextMenuComponent,
+    SearchComponent
   ],
   imports: [
     BrowserModule,
