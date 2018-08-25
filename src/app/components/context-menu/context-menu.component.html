@@ -1,0 +1,8 @@
+<div id="context-menu" class="custom-menu" [ngStyle]="{'top': top, 'left': left}">
+    <ul>
+        <li *ngFor="let option of options; let i = index" [ngClass]="{'active-item': !option.disabled}" (click)="itemClicked(i)">
+            <span [class]="'fa ' + option.icon"></span>
+            <span [ngClass]="{'disabled-text': option.disabled}">{{option.text}}</span>
+        </li>
+    </ul>
+</div>

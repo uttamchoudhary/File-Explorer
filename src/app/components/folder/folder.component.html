@@ -1,7 +1,7 @@
 <ul *ngIf="files" class="folder-structure m-l-15">
     <li *ngFor="let file of files">
         <ng-container *ngIf="file.children">
-            <div class="folder" (click)="file.open=!!!file.open">
+            <div class="folder" (click)="file.open=!!!file.open" (contextmenu)="showOptions($event, 'folder')">
                 <i class="fa fa-folder" aria-hidden="true" [ngClass]="{'fa-folder-open':file.open}"></i>
                 <span class="folder-name">{{file.title}}</span>
             </div>
@@ -10,7 +10,7 @@
             </div>
         </ng-container>
         <ng-container *ngIf="!file.children">
-            <div class="file" (click)="openFile(file)">
+            <div class="file" (click)="openFile(file)" (contextmenu)="showOptions($event, 'file')">
                 <i class="fa fa-file" aria-hidden="true"></i>
                 <span class="file-name">{{file.file_name}}</span>
             </div>

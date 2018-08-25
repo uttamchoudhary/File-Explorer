@@ -1,6 +1,7 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewContainerRef } from "@angular/core";
 import { ExplorerService } from "./services/explorer.service";
 import { LoaderService } from "./services/loader.service";
+import { ContextMenuService } from "./services/context-menu.service";
 
 @Component({
   selector: "app-root",
@@ -13,8 +14,12 @@ export class AppComponent implements OnInit {
 
   constructor(
     private _explorer: ExplorerService,
-    private loader: LoaderService
-  ) {}
+    private loader: LoaderService,
+    private _contextMenu: ContextMenuService,
+    private _vcr: ViewContainerRef
+  ) {
+    _contextMenu.viewContainerRef = _vcr;
+  }
 
   ngOnInit() {
     this.tabs = [

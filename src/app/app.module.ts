@@ -8,6 +8,7 @@ import { AppComponent } from './app.component';
 import { FolderComponent } from './components/folder/folder.component';
 import { FileViewComponent } from './components/file-view/file-view.component';
 import { LoaderComponent } from './components/loader/loader.component';
+import { ContextMenuComponent } from './components/context-menu/context-menu.component';
 
 
 @NgModule({
@@ -15,7 +16,8 @@ import { LoaderComponent } from './components/loader/loader.component';
     AppComponent,
     FolderComponent,
     FileViewComponent,
-    LoaderComponent
+    LoaderComponent,
+    ContextMenuComponent
   ],
   imports: [
     BrowserModule,
@@ -25,6 +27,7 @@ import { LoaderComponent } from './components/loader/loader.component';
     HttpClientModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [ContextMenuComponent]
 })
 export class AppModule { }
