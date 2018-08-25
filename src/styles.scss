@@ -28,12 +28,53 @@
 
 .explorer.container {
     border: 1px solid #F1EBEA;
-    box-shadow: 2px #F1EBEA;
+    height: 80vh;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 5px 5px 20px 10px #C6C0BF;
     .resizable {
+        height: 100%;
         >div {
             &:first-child {
-                background: #F1EBEA !important
+                background: #F1EBEA !important;
             }
         }
+        .content-header {
+            margin: 30px 20px;
+        }
+        .tabs {
+            list-style-type: none;
+            margin-top: 20px;
+            li.tab {
+                margin-bottom: 16px;
+                .tab-content {
+                    max-height: 250px;
+                    overflow: auto;
+                    background: #F2F2F2;
+                }
+                .fa-folder,
+                .fa-folder-open {
+                    color: #83CADF;
+                }
+                .tab-name {
+                    margin-left: 5px;
+                }
+            }
+        }
+    }
+}
+
+.search-widget {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 20px 30px;
+    padding: 12px 18px;
+    border-radius: 30px;
+    border: 2px solid #C6C0BF;
+    color: #B2AEAD;
+    input {
+        border: none;
+        outline: none;
     }
 }

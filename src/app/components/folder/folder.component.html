@@ -1,4 +1,4 @@
-<ul *ngIf="files" class="folder-structure" [ngClass]="{'m-l-15' : level !== 0}">
+<ul *ngIf="files" class="folder-structure m-l-15">
     <li *ngFor="let file of files">
         <ng-container *ngIf="file.children">
             <div class="folder" (click)="file.open=!!!file.open">

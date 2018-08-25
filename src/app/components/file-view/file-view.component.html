@@ -1,7 +1,15 @@
-<div *ngIf="file">
-    <p>Name : {{file.file_name}}</p>
-    <p>Type : {{file.type}}</p>
-</div>
-<div *ngIf="!file">
-    <p>Select a file to open</p>
+<div class="container-fluid">
+    <div class="file-header" *ngIf="file">
+        <span>File: {{file.file_name}}</span>
+    </div>
+    <div class="file-content">
+        <div *ngIf="file">
+            <p>Name : {{file.file_name}}</p>
+            <p>Type : {{file.type}}</p>
+        </div>
+        <div *ngIf="!file" class="no-preview">
+            <p>Select a file to open</p>
+        </div>
+    </div>
+
 </div>

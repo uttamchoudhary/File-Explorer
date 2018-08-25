@@ -15,7 +15,6 @@ export class FolderComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log(this.level);
     
   }
 
