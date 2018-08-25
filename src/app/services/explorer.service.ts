@@ -54,14 +54,20 @@ export class ExplorerService {
         let result = {};
         if (typeof data[elem] === "object" && data[elem] instanceof Array) {
           result["title"] = elem;
+          result['ref'] =  `${this.currentHash}|${results.length}`;
+          result['file_path'] = this.currentFilePath + elem;
           result["children"] = data[elem];
           this.storeFileHash(data[elem], results.length, elem);
         } else if (typeof data[elem] === "string") {
           this.currentFilePath += 'Game play resources/';
           result["title"] = data[elem];
+          result['ref'] = `${index}`;
+          result['file_path'] = data[elem];
           result["children"] = [
             {
               title: "Game play resources",
+              ref: `${index}|children|0`,
+              file_path: `${data[elem]}/Game play resources`,
               children: this.formatData(data["Game play resources"], 1, 0)
             }
           ];
@@ -77,6 +83,8 @@ export class ExplorerService {
   storeFileHash(list, index, folder) {
     let baseRef = this.currentHash + `${index}|children|`
     this.fileHash.push(...list.map((file, index) => {
+        file['ref'] = baseRef + index;
+        file['file_path'] = this.currentFilePath + folder;
         return {
           name : file.file_name,
           ref: baseRef + index,
@@ -93,6 +101,22 @@ export class ExplorerService {
         result = result[element]
     });
     return result;
+  }
+
+  delete(){
+
+  }
+
+  rename(){
+
+  }
+
+  addFile(){
+
+  }
+
+  addFolder(){
+
   }
 
   getSuggestion(text){

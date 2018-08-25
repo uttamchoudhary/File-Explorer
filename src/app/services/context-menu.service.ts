@@ -19,7 +19,7 @@ export class ContextMenuService {
     private _eventManager: EventManager
   ) { } 
 
-  showContextMenu(event: MouseEvent, options: ContextMenuOption[]) : boolean {
+  showContextMenu(event: MouseEvent, options: ContextMenuOption[], reference) : boolean {
 
     event.stopPropagation();
     event.preventDefault();
@@ -34,6 +34,7 @@ export class ContextMenuService {
     componentRef.instance.options = options;
     componentRef.instance.left = event.clientX + 'px';
     componentRef.instance.top = event.clientY + 'px';
+    componentRef.instance.ref = reference;
     
     this._currentContextMenu = componentRef;
     this._menuAlreadyOn = true;

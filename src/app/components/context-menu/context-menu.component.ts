@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 
 export interface ContextMenuOption {
   text: string;
-  action?: (type) => void;
+  action?: (ref, action) => void;
   icon?: string;
   disabled?: boolean;
+  key: string;
 }
 
 @Component({
@@ -17,10 +18,11 @@ export class ContextMenuComponent {
   options: ContextMenuOption[] = [];
   left: string;
   top: string;
+  ref: any;
 
   itemClicked(i: number) {
     if (this.options[i].action) {
-      this.options[i].action(this.options[i].text);
+      this.options[i].action(this.ref, this.options[i].key);
     }
   }
 

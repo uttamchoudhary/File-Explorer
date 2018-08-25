@@ -1,18 +1,20 @@
 <ul *ngIf="files" class="folder-structure m-l-15">
     <li *ngFor="let file of files">
         <ng-container *ngIf="file.children">
-            <div class="folder" (click)="file.open=!!!file.open" (contextmenu)="showOptions($event, 'folder')">
+            <div class="folder" (click)="file.open=!!!file.open" (contextmenu)="showOptions($event, 'folder', file)">
                 <i class="fa fa-folder" aria-hidden="true" [ngClass]="{'fa-folder-open':file.open}"></i>
-                <span class="folder-name">{{file.title}}</span>
+                <span class="folder-name" *ngIf="!file.renaming">{{file.title}}</span>
+                <input type="text" #renameInput *ngIf="file.renaming" [value]="file.title" (click)="$event.stopPropagation()" (keyup.enter)="rename($event, file)" (blur)="rename($event, file)">
             </div>
             <div [hidden]="!file.open">
                 <Folder [files]="file.children" [level]="level+1"></Folder>
             </div>
         </ng-container>
         <ng-container *ngIf="!file.children">
-            <div class="file" (click)="openFile(file)" (contextmenu)="showOptions($event, 'file')">
+            <div class="file" (click)="openFile(file)" (contextmenu)="showOptions($event, 'file', file)">
                 <i class="fa fa-file" aria-hidden="true"></i>
-                <span class="file-name">{{file.file_name}}</span>
+                <span *ngIf="!file.renaming" class="file-name">{{file.file_name}}</span>
+                <input type="text" #renameInput *ngIf="file.renaming" [value]="file.file_name" (click)="$event.stopPropagation()" (keyup.enter)="rename($event, file)" (blur)="rename($event, file)">
             </div>
         </ng-container>
     </li>

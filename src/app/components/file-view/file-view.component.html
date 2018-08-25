@@ -1,6 +1,7 @@
 <div class="container-fluid">
     <div class="file-header" *ngIf="file">
         <span>File: {{file.file_name}}</span>
+        <span class="pull-right text-muted">Path: {{file.file_path}}</span>
     </div>
     <div class="file-content">
         <div *ngIf="file">
