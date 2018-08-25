@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewContainerRef } from "@angular/core";
+import { Component, OnInit, ViewContainerRef, OnDestroy } from "@angular/core";
 
 import { ExplorerService } from "./services/explorer.service";
 import { LoaderService } from "./services/loader.service";
@@ -10,7 +10,7 @@ import { ContextMenuService } from "./services/context-menu.service";
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.scss"]
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   public level = 0;
   public tabs;
 
@@ -53,6 +53,10 @@ export class AppComponent implements OnInit {
 
   openTab(tab){
     this.tabs.forEach(item => item.open = tab.title !== item.title ? false : !tab.open);
+  }
+
+  ngOnDestroy(){
+    this._explorer.updateStorage();
   }
 
   

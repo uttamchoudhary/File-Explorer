@@ -10,6 +10,7 @@ import { FileViewComponent } from './components/file-view/file-view.component';
 import { LoaderComponent } from './components/loader/loader.component';
 import { ContextMenuComponent } from './components/context-menu/context-menu.component';
 import { SearchComponent } from './components/search/search.component';
+import { UpdateItemDirective } from './directives/update-item.directive';
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import { SearchComponent } from './components/search/search.component';
     FileViewComponent,
     LoaderComponent,
     ContextMenuComponent,
-    SearchComponent
+    SearchComponent,
+    UpdateItemDirective
   ],
   imports: [
     BrowserModule,

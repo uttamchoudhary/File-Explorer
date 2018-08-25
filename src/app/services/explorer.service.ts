@@ -10,7 +10,10 @@ export class ExplorerService {
   private LONG_JSON = "http://192.168.29.41:8887/folder-structure.json";
 
   public fileHash: Array<any> = [];
-  public folderStructure : Array<any> = [];
+  public folders : Array<any> = [];
+  public trash : Array<any> = [];
+  public recents : Array<any> = [];
+  
 
   private currentHash = '';
   private currentFilePath = '';
@@ -23,19 +26,19 @@ export class ExplorerService {
       let fileRefs = localStorage.getItem("FILE_REF");
       if (data && fileRefs) {
         this.fileHash = JSON.parse(fileRefs);
-        this.folderStructure = JSON.parse(data);
-        observer.next(this.folderStructure);  
+        this.folders = JSON.parse(data);
+        observer.next(this.folders);  
         observer.complete();
       } else {
         this._http.get(this.LONG_JSON).subscribe(
           (res: any) => {
             //let data = res.json();
             let data = res;
-            this.folderStructure = data.map((elem, index) => this.formatData(elem, 0, index));
-            localStorage.setItem("FILE_STRUCTURE", JSON.stringify(this.folderStructure));
+            this.folders = data.map((elem, index) => this.formatData(elem, 0, index));
+            localStorage.setItem("FILE_STRUCTURE", JSON.stringify(this.folders));
 
             localStorage.setItem("FILE_REF", JSON.stringify(this.fileHash));
-            observer.next(this.folderStructure);
+            observer.next(this.folders);
           },
           err => {
             alert("unable to load files. Please try again");
@@ -54,7 +57,7 @@ export class ExplorerService {
         let result = {};
         if (typeof data[elem] === "object" && data[elem] instanceof Array) {
           result["title"] = elem;
-          result['ref'] =  `${this.currentHash}|${results.length}`;
+          result['ref'] =  `${this.currentHash}${results.length}`;
           result['file_path'] = this.currentFilePath + elem;
           result["children"] = data[elem];
           this.storeFileHash(data[elem], results.length, elem);
@@ -96,26 +99,62 @@ export class ExplorerService {
 
   searchFile(file){
     let refs = file.ref.split('|');
-    let result = this.folderStructure;
+    let result = this.folders;
     refs.forEach(element => {
         result = result[element]
     });
     return result;
   }
 
-  delete(){
+  delete(item, isExisting){
+    let refs = item.ref.split('|');
+    let len = refs.length;
+    let parent = this.folders;
+    for(let i=0; i < len-1; i++){
+      parent = parent[refs[i]];
+    }
+    let deleted = parent.splice(+refs[len-1], 1);
+    isExisting ? this.trash.push(deleted) : null;
+  }
+
+  rename(item, name){
+    if(!item.children){
+      item['file_name'] = name;
+      item['type'] = name.split('.').slice(-1) 
+    }else{
+      item['title'] = name;
+      item['file_path'].split('/').slice(0,item['file_path'].length-1).join('/') + `/${name}`;
+    }
+  }
+
+  addFile(parent){
+    let file = {
+      file_name : '',
+      type: '',
+      file_path: parent.file_path,
+      ref: `${parent.ref}|children|${parent.children.length}`,
+      renaming: true
+    }
+    parent.children.push(file);
+  }
+
+  addFolder(parent){
+    let folder = {
+      title : '',
+      children: [],
+      file_path: parent.file_path,
+      ref: `${parent.ref}|children|0`,
+      renaming: true
+    }
+    parent['open'] = true;
+    parent.children.unshift(folder);
+  }
+
+  restore(item){
 
   }
 
-  rename(){
-
-  }
-
-  addFile(){
-
-  }
-
-  addFolder(){
+  updateStorage(){
 
   }
 

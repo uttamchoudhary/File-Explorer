@@ -13,8 +13,6 @@ export class FolderComponent implements OnInit {
   @Input() files;
   @Input() level;
 
-  @ViewChild('renameInput') renameInput : ElementRef;
-
   options = {
     file: [
       {
@@ -66,19 +64,21 @@ export class FolderComponent implements OnInit {
 
   ngOnInit() {}
 
-  doAction(ref, action) {
-    let isFolder = ref.children ? true : false;
+  doAction(item, action) {
+    let isFolder = item.children ? true : false;
     switch(action){
       case 'delete' :
-        
+        this._explorer.delete(item, true);
         break;
       case 'rename':
-        ref['renaming'] = true;
-        setTimeout(() => this.renameInput.nativeElement.focus(), 0);
+        item['renaming'] = true;
         break;
       case 'add_file':
+        item['open'] = true;
+        this._explorer.addFile(item);
         break;
       case 'add_folder':
+        this._explorer.addFolder(item);
         break;
       default:
         null;
@@ -98,14 +98,4 @@ export class FolderComponent implements OnInit {
     this._contextMenu.showContextMenu(evt, this.options[type], file);
   }
 
-  rename(event, file){
-    let name = event.target.value;
-    file['renaming'] = false;
-
-    if(!name)
-      return
-
-    let isFolder = file.children ? file['title'] = name : file['file_name'] = name;
-    console.log(this._explorer.folderStructure);
-  }
 }
