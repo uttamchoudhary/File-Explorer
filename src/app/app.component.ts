@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewContainerRef, OnDestroy } from "@angular/core";
+import { Component, OnInit, ViewContainerRef, HostListener } from "@angular/core";
 
 import { ExplorerService } from "./services/explorer.service";
 import { LoaderService } from "./services/loader.service";
@@ -10,7 +10,7 @@ import { ContextMenuService } from "./services/context-menu.service";
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.scss"]
 })
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent implements OnInit {
   public level = 0;
   public tabs;
 
@@ -23,6 +23,12 @@ export class AppComponent implements OnInit, OnDestroy {
   ) {
     _contextMenu.viewContainerRef = _vcr;
   }
+
+  // @HostListener('window:unload', [ '$event' ])
+  // beforeUnloadHander(event) {
+  //   this._explorer.updateStorage();
+  //   return;
+  // }
 
   ngOnInit() {
     this.tabs = [
@@ -64,9 +70,4 @@ export class AppComponent implements OnInit, OnDestroy {
     this.tabs.forEach(item => item.open = tab.title !== item.title ? false : !tab.open);
   }
 
-  ngOnDestroy(){
-    this._explorer.updateStorage();
-  }
-
-  
 }

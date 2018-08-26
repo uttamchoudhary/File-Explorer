@@ -86,8 +86,7 @@ export class FolderComponent implements OnInit {
       case 'restore':
         this._explorer.restore(item, this.currentIndex);
         break;
-      default:
-        null;
+      default: null;
     }
   }
 

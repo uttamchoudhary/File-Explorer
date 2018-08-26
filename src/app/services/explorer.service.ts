@@ -19,7 +19,7 @@ export class ExplorerService {
   private currentHash = '';
   private currentFilePath = '';
 
-  constructor(private _http: HttpClient) {}
+  constructor(private _http: HttpClient) { }
 
   getStructure() {
     return new Observable(observer => {
@@ -147,7 +147,7 @@ export class ExplorerService {
 
     let deleted = siblings.splice(+refs[len-1], 1);
     this.updateDataIndexing(parent);
-    //update filehash remove hashing for files
+    this.updateFileHash(deleted, parent, 'delete');
     isExisting ? this.trash.push(...deleted) : null;
   }
 
@@ -155,14 +155,15 @@ export class ExplorerService {
     if(!item.children){
       item['file_name'] = name;
       item['type'] = name.split('.').slice(-1);
-      //update filehash add or update
+      this.updateFileHash(item, null, 'file_rename');
     }else{
       item['title'] = name;
-      item['file_path'].split('/').slice(0,item['file_path'].length-1).join('/') + `/${name}`;
+      let paths = item['file_path'].split('/');
+      item['file_path'] = paths.slice(0,paths.length-1).join('/') + `/${name}`;
       if(item.children.length){
         this.updateFilesPath(item);
-        //update hash
       }
+      this.updateFileHash(item, this.getParentFolder(item, this.folders), 'folder_rename');
     }
   }
 
@@ -197,12 +198,9 @@ export class ExplorerService {
     parentInFolders['children'].splice(indexInFolders, 0, item);
     this.trash.splice(indexInTrash,1);
     this.updateDataIndexing(parentInFolders);
-  }
 
-  updateStorage(){
-    localStorage.setItem("FILE_STRUCTURE", JSON.stringify(this.folders));
-    localStorage.setItem("FILE_REF", JSON.stringify(this.fileHash));
-    localStorage.setItem("TRASH", JSON.stringify(this.trash));
+    let node = parentInFolders['children'][indexInFolders];
+    this.updateFileHash(node, null, 'restore');
   }
 
   updateDataIndexing(node){
@@ -233,8 +231,76 @@ export class ExplorerService {
     });
   }
 
-  updateFileHash(node){
+  updateFileHash(node, parent, type){
+    switch(type){
+      case 'delete':{
+        let filesToRemove = this.extractFiles(node);
+        let newFiles = this.extractFiles(parent);
+        let refs = this.fileHash.map(item => item.ref);
+        filesToRemove.forEach(file => {
+          let index = refs.indexOf(file.ref);
+          refs.splice(index, 1);
+          this.fileHash.splice(index,1);
+        });
+        newFiles.forEach(file => {
+          this.fileHash.push({
+            name : file.file_name,
+            ref: file.ref,
+            file_path: file.file_path
+          })
+        });
+        break;
+      }
+      case 'file_rename': {
+        let file = this.fileHash.filter(item => item.ref === node.ref)[0];
+        file ? file.name = node.file_name : this.fileHash.push({
+          name : node.file_name,
+          ref: node.ref,
+          file_path: node.file_path
+        });
+        break;
+      }
+      case 'folder_rename':{
+        let files = this.extractFiles(node.children.length > 0 ? parent : node);
+        let refs = this.fileHash.map(item => item.name);
+        files.forEach(file => {
+          let index = refs.indexOf(file.file_name);
+          this.fileHash[index] = {
+            name : file.file_name,
+            ref: file.ref,
+            file_path: file.file_path
+          }
+        });
+        break;
+      }
+      case 'restore':{
+        let files = this.extractFiles(node);
+        files.forEach(file => {
+          this.fileHash.push({
+            name : file.file_name,
+            ref: file.ref,
+            file_path: file.file_path
+          });
+        });
+        break;
+      }
+      default: null
+    }
+  }
 
+  extractFiles(node){
+    if(!node)
+      return;
+
+    if(!node.children)
+      return [node]
+
+    let list = [];
+    node.children.forEach(child => {
+      child.children ? list.push(...this.extractFiles(child)) : list.push(child)
+    })
+
+    return list;
   }
 
   getSuggestion(text){
@@ -245,5 +311,11 @@ export class ExplorerService {
       observer.next(list);
       observer.complete();
     });
+  }
+
+  updateStorage(){
+    localStorage.setItem("FILE_STRUCTURE", JSON.stringify(this.folders));
+    localStorage.setItem("FILE_REF", JSON.stringify(this.fileHash));
+    localStorage.setItem("TRASH", JSON.stringify(this.trash));
   }
 }
