@@ -1,7 +1,7 @@
 <ul *ngIf="files" class="folder-structure m-l-15">
     <li *ngFor="let file of files; let index = index">
         <ng-container *ngIf="file.children">
-            <div class="folder" (click)="file.open=!!!file.open" (contextmenu)="showContextMenu ? showOptions($event, 'folder', file, index) : null">
+            <div class="folder" [myDropTarget]="file" [myDraggable]="file" (click)="file.open=!!!file.open" (contextmenu)="showContextMenu ? showOptions($event, 'folder', file, index) : null">
                 <i class="fa fa-folder" aria-hidden="true" [ngClass]="{'fa-folder-open':file.open}"></i>
                 <span class="folder-name" *ngIf="!file.renaming">{{file.title}}</span>
                 <input type="text" [update-item]="file" *ngIf="file.renaming" [value]="file.title">
@@ -11,7 +11,7 @@
             </div>
         </ng-container>
         <ng-container *ngIf="!file.children">
-            <div class="file" (click)="allowFileOpen ? openFile(file) : null" (contextmenu)="showContextMenu ? showOptions($event, 'file', file, index) : null">
+            <div class="file" [myDraggable]="file" (click)="allowFileOpen ? openFile(file) : null" (contextmenu)="showContextMenu ? showOptions($event, 'file', file, index) : null">
                 <i class="fa fa-file" aria-hidden="true"></i>
                 <span *ngIf="!file.renaming" class="file-name">{{file.file_name}}</span>
                 <input type="text" [update-item]="file" *ngIf="file.renaming" [value]="file.file_name">

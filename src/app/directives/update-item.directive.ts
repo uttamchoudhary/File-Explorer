@@ -20,7 +20,7 @@ export class UpdateItemDirective implements AfterViewInit {
     @Input("update-item")
     itemRef;
 
-    constructor(private _el: ElementRef, private _explorer: ExplorerService) {}
+    constructor(private _el: ElementRef, private _explorer: ExplorerService) { }
 
     ngAfterViewInit() {
         this._el.nativeElement.focus();
@@ -32,11 +32,10 @@ export class UpdateItemDirective implements AfterViewInit {
 
         if (!name && this.itemRef.children && this.itemRef.children.length)
             return;
-        else if (!name) this._explorer.delete(this.itemRef, false);
+        else if (!name)
+            this._explorer.delete(this.itemRef, false);
         else {
-            this.itemRef.children
-                ? null
-                : this._explorer.updateRecent(this.itemRef, false);
+            this.itemRef.children ? null : this._explorer.updateRecent(this.itemRef, false);
             this._explorer.rename(this.itemRef, name);
         }
     }

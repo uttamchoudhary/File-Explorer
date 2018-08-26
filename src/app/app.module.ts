@@ -10,7 +10,10 @@ import { FileViewComponent } from './components/file-view/file-view.component';
 import { LoaderComponent } from './components/loader/loader.component';
 import { ContextMenuComponent } from './components/context-menu/context-menu.component';
 import { SearchComponent } from './components/search/search.component';
+
 import { UpdateItemDirective } from './directives/update-item.directive';
+import { DraggableDirective } from './directives/draggable.directive';
+import { DropTargetDirective } from './directives/drop-target.directive';
 
 
 @NgModule({
@@ -21,7 +24,9 @@ import { UpdateItemDirective } from './directives/update-item.directive';
     LoaderComponent,
     ContextMenuComponent,
     SearchComponent,
-    UpdateItemDirective
+    UpdateItemDirective,
+    DraggableDirective,
+    DropTargetDirective
   ],
   imports: [
     BrowserModule,

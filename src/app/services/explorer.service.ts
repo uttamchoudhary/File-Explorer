@@ -167,20 +167,20 @@ export class ExplorerService {
     }
   }
 
-  addFile(parent){
-    let file = {
+  addFile(parent, file?){
+    let newFile = file || {
       file_name : '',
       type: '',
       file_path: parent.file_path,
       ref: `${parent.ref}|children|${parent.children.length}`,
       renaming: true
     }
-    parent.children.push(file);
+    parent.children.push(newFile);
     this.updateDataIndexing(parent);
   }
 
-  addFolder(parent){
-    let folder = {
+  addFolder(parent, folder?){
+    let newFolder = folder || {
       title : '',
       children: [],
       file_path: parent.file_path,
@@ -188,7 +188,7 @@ export class ExplorerService {
       renaming: true
     }
     parent['open'] = true;
-    parent.children.unshift(folder);
+    parent.children.unshift(newFolder);
     this.updateDataIndexing(parent);
   }
 
