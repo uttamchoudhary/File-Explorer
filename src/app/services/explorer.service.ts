@@ -6,8 +6,8 @@ import { Observable } from "rxjs";
   providedIn: "root"
 })
 export class ExplorerService {
-  private SHORT_JSON = "";
-  private LONG_JSON = "http://192.168.29.41:8887/folder-structure.json";
+  private SHORT_JSON = "https://s3-ap-southeast-1.amazonaws.com/he-public-data/short_game_treea798b2e.json";
+  private LONG_JSON = "https://s3-ap-southeast-1.amazonaws.com/he-public-data/long_game_tree77fa4dd.json";
 
   public fileHash: Array<any> = [];
 
@@ -34,21 +34,21 @@ export class ExplorerService {
 
         observer.next({
           folders: this.folders,
-          trash: this.trash
+          trash: this.trash,
+          recent : this.recents
         });  
         observer.complete();
         
       } else {
         this._http.get(this.LONG_JSON).subscribe(
           (res: any) => {
-            //let data = res.json();
-            let data = res;
-            this.folders = data.map((elem, index) => this.formatData(elem, 0, index));
+            this.folders = res.map((elem, index) => this.formatData(elem, 0, index));
             localStorage.setItem("FILE_STRUCTURE", JSON.stringify(this.folders));
             localStorage.setItem("FILE_REF", JSON.stringify(this.fileHash));
             observer.next({
               folders: this.folders,
-              trash: this.trash
+              trash: this.trash,
+              recent: this.recents
             });
             observer.complete();
           },
@@ -211,6 +211,15 @@ export class ExplorerService {
       if(child.children && child.children.length)
         this.updateDataIndexing(child);
     });
+  }
+
+  updateRecent(item, noReorder?){
+    if(noReorder)
+      return
+      
+    let index = this.recents.map(file => file.ref).indexOf(item.ref);
+    index > -1 ? this.recents.splice(index,1) : null;
+    this.recents.unshift(item);
   }
 
   updateFilesPath(node){

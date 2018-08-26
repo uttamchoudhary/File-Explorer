@@ -7,11 +7,11 @@
                 <input type="text" [update-item]="file" *ngIf="file.renaming" [value]="file.title">
             </div>
             <div [hidden]="!file.open">
-                <Folder [files]="file.children" [showContextMenu]="isTrash ? false : showContextMenu" [isTrash]="isTrash"></Folder>
+                <Folder [files]="file.children" [showContextMenu]="isTrash ? false : showContextMenu" [isTrash]="isTrash" [allowFileOpen]="allowFileOpen"></Folder>
             </div>
         </ng-container>
         <ng-container *ngIf="!file.children">
-            <div class="file" (click)="openFile(file)" (contextmenu)="showContextMenu ? showOptions($event, 'file', file, index) : null">
+            <div class="file" (click)="allowFileOpen ? openFile(file) : null" (contextmenu)="showContextMenu ? showOptions($event, 'file', file, index) : null">
                 <i class="fa fa-file" aria-hidden="true"></i>
                 <span *ngIf="!file.renaming" class="file-name">{{file.file_name}}</span>
                 <input type="text" [update-item]="file" *ngIf="file.renaming" [value]="file.file_name">

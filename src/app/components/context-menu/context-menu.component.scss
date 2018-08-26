@@ -1,12 +1,15 @@
 .custom-menu {
     position: fixed;
     z-index: 9999;
+    box-shadow: 5px 5px 20px 10px #C6C0BF;
     ul {
         list-style-type: none;
         background: #fff;
         padding: 5px 0;
+        margin: 0;
         li {
             padding: 5px 10px;
+            cursor: pointer;
             .fa {
                 margin-right: 10px;
             }

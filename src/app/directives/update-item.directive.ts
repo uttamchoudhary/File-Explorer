@@ -28,6 +28,7 @@ export class UpdateItemDirective implements AfterViewInit {
     else if(!name)
       this._explorer.delete(this.itemRef, false);
 
+    this.itemRef.children ? null : this._explorer.updateRecent(this.itemRef, false); 
     this._explorer.rename(this.itemRef, name)
   }
 

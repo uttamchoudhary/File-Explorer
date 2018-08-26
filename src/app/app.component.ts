@@ -30,19 +30,22 @@ export class AppComponent implements OnInit, OnDestroy {
         title: "Recent Files",
         list: [],
         open: false,
-        showContextMenu: false
+        showContextMenu: false,
+        allowFileOpen: true
       },
       {
         title: "File Explorer",
         list: [],
         open: true,
-        showContextMenu: true
+        showContextMenu: true,
+        allowFileOpen: true
       },
       {
         title: "Trash",
         list: [],
         open: false,
         showContextMenu: true,
+        allowFileOpen: false,
         isTrash: true
       }
     ];
@@ -51,6 +54,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this._explorer.getStructure().subscribe(res => {
       this.tabs[1].list = res['folders'];
       this.tabs[2].list = res['trash'];
+      this.tabs[0].list = res['recent'];
       this.loader.stop();
     });
     

@@ -13,6 +13,7 @@ export class FolderComponent implements OnInit {
   @Input() files;
   @Input() showContextMenu;
   @Input() isTrash;
+  @Input() allowFileOpen;
 
   currentIndex;
   options = {
@@ -95,6 +96,7 @@ export class FolderComponent implements OnInit {
       type: "OPEN_FILE",
       file: file
     });
+    this._explorer.updateRecent(file, !this.isTrash && !this.showContextMenu);
   }
 
   showOptions(evt, type, file, index?) {
