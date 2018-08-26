@@ -11,8 +11,10 @@ import { ExplorerService } from "../../services/explorer.service";
 export class FolderComponent implements OnInit {
 
   @Input() files;
-  @Input() level;
+  @Input() showContextMenu;
+  @Input() isTrash;
 
+  currentIndex;
   options = {
     file: [
       {
@@ -80,11 +82,12 @@ export class FolderComponent implements OnInit {
       case 'add_folder':
         this._explorer.addFolder(item);
         break;
+      case 'restore':
+        this._explorer.restore(item, this.currentIndex);
+        break;
       default:
         null;
     }
-    
-    console.log(action);
   }
 
   openFile(file) {
@@ -94,8 +97,16 @@ export class FolderComponent implements OnInit {
     });
   }
 
-  showOptions(evt, type, file) {
-    this._contextMenu.showContextMenu(evt, this.options[type], file);
+  showOptions(evt, type, file, index?) {
+    let options = this.isTrash ? [{
+      text: "Restore",
+      action: this.doAction.bind(this),
+      icon: "fa-redo",
+      key: 'restore'
+    }] : this.options[type];
+
+    this.currentIndex = index;
+    this._contextMenu.showContextMenu(evt, options, file);
   }
 
 }

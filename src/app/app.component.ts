@@ -29,23 +29,28 @@ export class AppComponent implements OnInit, OnDestroy {
       {
         title: "Recent Files",
         list: [],
-        open: false
+        open: false,
+        showContextMenu: false
       },
       {
         title: "File Explorer",
         list: [],
-        open: true
+        open: true,
+        showContextMenu: true
       },
       {
         title: "Trash",
         list: [],
-        open: false
+        open: false,
+        showContextMenu: true,
+        isTrash: true
       }
     ];
 
     this.loader.start();
-    this._explorer.getStructure().subscribe((res: Array<any>) => {
-      this.tabs[1].list = res;
+    this._explorer.getStructure().subscribe(res => {
+      this.tabs[1].list = res['folders'];
+      this.tabs[2].list = res['trash'];
       this.loader.stop();
     });
     

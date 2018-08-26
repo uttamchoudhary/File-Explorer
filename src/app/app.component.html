@@ -14,7 +14,7 @@
                         <span class="tab-name">{{tab.title}}</span>
                     </div>
                     <div [hidden]="!tab.open" class="tab-content">
-                        <Folder [files]="tab.list" [level]="level"></Folder>
+                        <Folder [files]="tab.list" [showContextMenu]="tab.showContextMenu" [isTrash]="tab.isTrash"></Folder>
                     </div>
                 </li>
             </ul>

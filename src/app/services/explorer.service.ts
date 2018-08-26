@@ -10,6 +10,7 @@ export class ExplorerService {
   private LONG_JSON = "http://192.168.29.41:8887/folder-structure.json";
 
   public fileHash: Array<any> = [];
+
   public folders : Array<any> = [];
   public trash : Array<any> = [];
   public recents : Array<any> = [];
@@ -24,11 +25,19 @@ export class ExplorerService {
     return new Observable(observer => {
       let data = localStorage.getItem("FILE_STRUCTURE");
       let fileRefs = localStorage.getItem("FILE_REF");
+      let deleted = localStorage.getItem("TRASH");
+
       if (data && fileRefs) {
         this.fileHash = JSON.parse(fileRefs);
         this.folders = JSON.parse(data);
-        observer.next(this.folders);  
+        this.trash = deleted ? JSON.parse(deleted) : [];
+
+        observer.next({
+          folders: this.folders,
+          trash: this.trash
+        });  
         observer.complete();
+        
       } else {
         this._http.get(this.LONG_JSON).subscribe(
           (res: any) => {
@@ -36,12 +45,16 @@ export class ExplorerService {
             let data = res;
             this.folders = data.map((elem, index) => this.formatData(elem, 0, index));
             localStorage.setItem("FILE_STRUCTURE", JSON.stringify(this.folders));
-
             localStorage.setItem("FILE_REF", JSON.stringify(this.fileHash));
-            observer.next(this.folders);
+            observer.next({
+              folders: this.folders,
+              trash: this.trash
+            });
+            observer.complete();
           },
           err => {
             alert("unable to load files. Please try again");
+            observer.complete();
           }
         );
       }
@@ -106,24 +119,50 @@ export class ExplorerService {
     return result;
   }
 
+  getParentFolder(item, base){
+    let refs = item.ref.split('|');
+    let len = refs.length;
+    if(len === 1)
+      return {children: this.folders, ref: ''}
+    
+    let parent = base;
+    for(let i=0; i < len-2; i++){
+        parent = parent[refs[i]];
+    }
+    return parent;
+  }
+
   delete(item, isExisting){
     let refs = item.ref.split('|');
     let len = refs.length;
-    let parent = this.folders;
+    let siblings = this.folders;
+    let parent;
     for(let i=0; i < len-1; i++){
-      parent = parent[refs[i]];
+      siblings = siblings[refs[i]];
+      if(i === len-3)
+        parent = siblings;
     }
-    let deleted = parent.splice(+refs[len-1], 1);
-    isExisting ? this.trash.push(deleted) : null;
+    if(!parent)
+      parent = {children: this.folders, ref: ''}
+
+    let deleted = siblings.splice(+refs[len-1], 1);
+    this.updateDataIndexing(parent);
+    //update filehash remove hashing for files
+    isExisting ? this.trash.push(...deleted) : null;
   }
 
   rename(item, name){
     if(!item.children){
       item['file_name'] = name;
-      item['type'] = name.split('.').slice(-1) 
+      item['type'] = name.split('.').slice(-1);
+      //update filehash add or update
     }else{
       item['title'] = name;
       item['file_path'].split('/').slice(0,item['file_path'].length-1).join('/') + `/${name}`;
+      if(item.children.length){
+        this.updateFilesPath(item);
+        //update hash
+      }
     }
   }
 
@@ -136,6 +175,7 @@ export class ExplorerService {
       renaming: true
     }
     parent.children.push(file);
+    this.updateDataIndexing(parent);
   }
 
   addFolder(parent){
@@ -148,13 +188,43 @@ export class ExplorerService {
     }
     parent['open'] = true;
     parent.children.unshift(folder);
+    this.updateDataIndexing(parent);
   }
 
-  restore(item){
-
+  restore(item, indexInTrash){
+    let parentInFolders = this.getParentFolder(item, this.folders);
+    let indexInFolders = +item.ref.split('|').slice(-1);
+    parentInFolders['children'].splice(indexInFolders, 0, item);
+    this.trash.splice(indexInTrash,1);
+    this.updateDataIndexing(parentInFolders);
   }
 
   updateStorage(){
+    localStorage.setItem("FILE_STRUCTURE", JSON.stringify(this.folders));
+    localStorage.setItem("FILE_REF", JSON.stringify(this.fileHash));
+    localStorage.setItem("TRASH", JSON.stringify(this.trash));
+  }
+
+  updateDataIndexing(node){
+    node.children.forEach((child, index) => {
+      child['ref'] = node.ref ? `${node['ref']}|children|${index}` : `${index}`;
+      if(child.children && child.children.length)
+        this.updateDataIndexing(child);
+    });
+  }
+
+  updateFilesPath(node){
+    node.children.forEach((child, index) => {
+      if(child.children){
+        child['file_path'] = `${node['file_path']}/${child['title']}`;
+        this.updateFilesPath(child);
+      }else {
+        child['file_path'] = `${node['file_path']}`;
+      }
+    });
+  }
+
+  updateFileHash(node){
 
   }
 
