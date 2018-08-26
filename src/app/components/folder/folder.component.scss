@@ -21,5 +21,15 @@
         input {
             width: 80%;
         }
+        .file,
+        .folder {
+            &:focus {
+                background: #007bff !important;
+                color: #fff;
+            }
+            &:hover {
+                background: #E5E2E2
+            }
+        }
     }
 }

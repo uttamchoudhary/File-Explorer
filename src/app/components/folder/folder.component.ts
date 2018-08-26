@@ -85,6 +85,9 @@ export class FolderComponent implements OnInit {
         break;
       case 'restore':
         this._explorer.restore(item, this.currentIndex);
+      break;
+      case 'remove_perm':
+        this._explorer.removeFromTrash(this.currentIndex);
         break;
       default: null;
     }
@@ -104,7 +107,14 @@ export class FolderComponent implements OnInit {
       action: this.doAction.bind(this),
       icon: "fa-redo",
       key: 'restore'
-    }] : this.options[type];
+    },
+    {
+      text: "Remove",
+      action: this.doAction.bind(this),
+      icon: "fa-trash",
+      key: 'remove_perm'
+    }
+  ] : this.options[type];
 
     this.currentIndex = index;
     this._contextMenu.showContextMenu(evt, options, file);

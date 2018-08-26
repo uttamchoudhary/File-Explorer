@@ -114,7 +114,8 @@ export class ExplorerService {
     let refs = file.ref.split('|');
     let result = this.folders;
     refs.forEach(element => {
-        result = result[element]
+        result = result[element];
+        result instanceof Array ? null : result['open'] = true;
     });
     return result;
   }
@@ -146,8 +147,9 @@ export class ExplorerService {
       parent = {children: this.folders, ref: ''}
 
     let deleted = siblings.splice(+refs[len-1], 1);
+    deleted[0]['open'] = false;
     this.updateDataIndexing(parent);
-    this.updateFileHash(deleted, parent, 'delete');
+    this.updateFileHash(deleted[0], parent, 'delete');
     isExisting ? this.trash.push(...deleted) : null;
   }
 
@@ -301,6 +303,10 @@ export class ExplorerService {
     })
 
     return list;
+  }
+
+  removeFromTrash(indexInTrash?){
+    indexInTrash ? this.trash.splice(indexInTrash,1) : this.trash = [];
   }
 
   getSuggestion(text){

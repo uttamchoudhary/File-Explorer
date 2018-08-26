@@ -9,12 +9,12 @@
         <div class="col-md-3">
             <ul class="tabs">
                 <li *ngFor="let tab of tabs" class="tab">
-                    <div (click)="openTab(tab)">
+                    <div (click)="tab.open = !tab.open" tabindex="0" class="tab-header">
                         <i class="fa fa-folder" aria-hidden="true" [ngClass]="{'fa-folder-open':tab.open}"></i>
                         <span class="tab-name">{{tab.title}}</span>
                     </div>
                     <div [hidden]="!tab.open" class="tab-content">
-                        <Folder [files]="tab.list" [showContextMenu]="tab.showContextMenu" [isTrash]="tab.isTrash" [allowFileOpen]="tab.allowFileOpen"></Folder>
+                        <Folder *ngIf="tab.list.length > 0" [files]="tab.list" [showContextMenu]="tab.showContextMenu" [isTrash]="tab.isTrash" [allowFileOpen]="tab.allowFileOpen"></Folder>
                     </div>
                 </li>
             </ul>

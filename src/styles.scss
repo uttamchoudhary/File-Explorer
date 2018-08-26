@@ -41,6 +41,7 @@
         >div {
             &:first-child {
                 background: #F1EBEA !important;
+                overflow-x: auto;
             }
         }
         .content-header {
@@ -51,6 +52,12 @@
             margin-top: 20px;
             li.tab {
                 margin-bottom: 16px;
+                .tab-header {
+                    &:focus {
+                        background: #007bff;
+                        color: #fff;
+                    }
+                }
                 .tab-content {
                     max-height: 250px;
                     overflow: auto;
@@ -73,4 +80,5 @@
     top: 0;
     right: 0;
     margin: 20px 30px;
+    z-index: 999;
 }
