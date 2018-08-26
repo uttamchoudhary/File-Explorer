@@ -11,9 +11,10 @@ import { ContextMenuService } from "./services/context-menu.service";
   styleUrls: ["./app.component.scss"]
 })
 export class AppComponent implements OnInit {
+
   public level = 0;
   public tabs;
-
+  public loadFromRemote = false;
 
   constructor(
     private _explorer: ExplorerService,
@@ -24,11 +25,11 @@ export class AppComponent implements OnInit {
     _contextMenu.viewContainerRef = _vcr;
   }
 
-  // @HostListener('window:unload', [ '$event' ])
-  // beforeUnloadHander(event) {
-  //   this._explorer.updateStorage();
-  //   return;
-  // }
+  @HostListener('window:unload', [ '$event' ])
+  beforeUnloadHander(event) {
+    !this.loadFromRemote ? this._explorer.updateStorage() : null;
+    return;
+  }
 
   ngOnInit() {
     this.tabs = [
@@ -68,6 +69,14 @@ export class AppComponent implements OnInit {
 
   openTab(tab){
     this.tabs.forEach(item => item.open = tab.title !== item.title ? false : !tab.open);
+  }
+
+  hardReload(){
+    this.loadFromRemote = true;
+    localStorage.removeItem("FILE_STRUCTURE");
+    localStorage.removeItem("FILE_REF");
+    localStorage.removeItem("TRASH");
+    window.location.reload();
   }
 
 }
