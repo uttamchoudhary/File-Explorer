@@ -60,7 +60,7 @@ export class ExplorerService {
         observer.next(res);
         observer.complete();
       },err => {
-          this._http.get('./../../assets/data.json').subscribe(res => {
+          this._http.get('./../../File-Explorer/assets/data.json').subscribe(res => {
             observer.next(res);
             observer.complete();
           },err => {

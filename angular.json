@@ -3,7 +3,7 @@
     "version": 1,
     "newProjectRoot": "projects",
     "projects": {
-        "FileTree": {
+        "File-Explorer": {
             "root": "",
             "sourceRoot": "src",
             "projectType": "application",
@@ -22,6 +22,8 @@
                         "main": "src/main.ts",
                         "polyfills": "src/polyfills.ts",
                         "tsConfig": "src/tsconfig.app.json",
+                        "baseHref": "/File-Explorer/",
+                        "deployUrl": "/File-Explorer/",
                         "assets": [
                             "src/favicon.ico",
                             "src/assets"
@@ -52,18 +54,18 @@
                 "serve": {
                     "builder": "@angular-devkit/build-angular:dev-server",
                     "options": {
-                        "browserTarget": "FileTree:build"
+                        "browserTarget": "File-Explorer:build"
                     },
                     "configurations": {
                         "production": {
-                            "browserTarget": "FileTree:build:production"
+                            "browserTarget": "File-Explorer:build:production"
                         }
                     }
                 },
                 "extract-i18n": {
                     "builder": "@angular-devkit/build-angular:extract-i18n",
                     "options": {
-                        "browserTarget": "FileTree:build"
+                        "browserTarget": "File-Explorer:build"
                     }
                 },
                 "test": {
@@ -97,7 +99,7 @@
                 }
             }
         },
-        "FileTree-e2e": {
+        "File-Explorer-e2e": {
             "root": "e2e/",
             "projectType": "application",
             "architect": {
@@ -105,11 +107,11 @@
                     "builder": "@angular-devkit/build-angular:protractor",
                     "options": {
                         "protractorConfig": "e2e/protractor.conf.js",
-                        "devServerTarget": "FileTree:serve"
+                        "devServerTarget": "File-Explorer:serve"
                     },
                     "configurations": {
                         "production": {
-                            "devServerTarget": "FileTree:serve:production"
+                            "devServerTarget": "File-Explorer:serve:production"
                         }
                     }
                 },
@@ -125,5 +127,5 @@
             }
         }
     },
-    "defaultProject": "FileTree"
+    "defaultProject": "File-Explorer"
 }
