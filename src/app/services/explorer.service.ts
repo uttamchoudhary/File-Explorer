@@ -338,3 +338,48 @@ export class ExplorerService {
     }
   }
 }
+
+// Method to store parent ref for every object(file/folder), so CRUD can happen in O(1)
+// var item = {
+//   "title": "Avengers Initiative",
+//   "children": [{
+//           "title": "Game play resources",
+//           "children": [{
+//               "title": "Installation",
+//               "children": [{
+//                       "title": "install.iso",
+//                       "type": "iso image"
+//                   },
+//                   {
+//                       "title": "archive_unbox.dat",
+//                       "type": "dat file"
+//                   }
+//               ]
+//           }]
+//       },
+//       {
+//           "title": "install.iso",
+//           "type": "iso image"
+//       },
+//       {
+//           "title": "install.iso",
+//           "type": "iso image"
+//       }
+//   ]
+// }
+
+// Object.prototype.declareChildren = function() {
+//   if (typeof this !== 'object' || !this.children || !this.children.length)
+//       return;
+
+//   let childs = this.children.length;
+//   for (let i = 0; i < childs; i++) {
+//       if (typeof this.children[i] === 'object') {
+//           this.children[i]['parent'] = this;
+//           this.children[i].declareChildren();
+//       }
+//   }
+// }
+
+// item.declareChildren();
+// console.log(item.children[0].children[0].children[0].parent.title);

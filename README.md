@@ -1,27 +1,27 @@
 # File-Explorer
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.0.8.
+File Explorer is psuedo file browser implemented in Angular6. Purpose for this project is to explore recursive Components in angular and demonstrate model to view flow of data.
 
-## Development server
+## Features:
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+* File Browser in left panel/ content viewer in right panel
+* Implemented Trash with Restore/Empty capabilities.
+* Contain record of Recent files (open, rename, added), latest on top
+* Add/Rename/Delete options for Files & Folders.
+* Drag & Drop feature to move file.folders.
+* Right click on file/folder to see the available options.
+* Search for any file present in Explorer in O(1).
+* Indexing for every file on rename/delete/add operations
+* Preserve State of Explorer and Trash from last session, State is preserved even after       page reload/close tab/back button.
+* Button is provided to disable state preserveness and load fresh data from server.
+* Fully Keyboard 
 
-## Code scaffolding
+## Demo:
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Check working here : https://uttamchoudhary.github.io/File-Explorer/
 
-## Build
+## Help:
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+For any query/issue, raise an issue or contact me at uttampratapchoudhary@gmail.com
+Contributions are welcome.
 
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
