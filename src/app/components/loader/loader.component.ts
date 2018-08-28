@@ -9,7 +9,7 @@ import { LoaderService } from './../../services/loader.service';
 export class LoaderComponent implements OnInit, OnDestroy {
 
 	private state: EventEmitter<any> = new EventEmitter();
-	private showLoader : boolean = false;
+	public showLoader : boolean = false;
 
 	constructor(private LoaderService: LoaderService) {
 	}
