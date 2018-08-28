@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewContainerRef, HostListener } from "@angular/core";
+import { Component, OnInit, ViewContainerRef, HostListener, AfterViewInit } from "@angular/core";
 
 import { ExplorerService } from "./services/explorer.service";
 import { LoaderService } from "./services/loader.service";
@@ -35,33 +35,55 @@ export class AppComponent implements OnInit {
     this.tabs = [
       {
         title: "Recent Files",
-        list: [],
+        children: [],
         open: false,
         showContextMenu: false,
         allowFileOpen: true
       },
       {
         title: "File Explorer",
-        list: [],
+        children: [],
         open: true,
         showContextMenu: true,
-        allowFileOpen: true
+        allowFileOpen: true,
+        options: [
+          {
+            text: "Add File",
+            action: this.doAction.bind(this),
+            icon: "fa-plus",
+            key: 'add_file'
+          },
+          {
+            text: "Add Folder",
+            action: this.doAction.bind(this),
+            icon: "fa-plus",
+            key: 'add_folder'
+          }
+        ]
       },
       {
         title: "Trash",
-        list: [],
+        children: [],
         open: false,
         showContextMenu: true,
         allowFileOpen: false,
-        isTrash: true
+        isTrash: true,
+        options: [
+          {
+            text: "Empty Trash",
+            action: this.doAction.bind(this),
+            icon: "fa-trash",
+            key: 'empty'
+          }
+        ]
       }
     ];
 
     this.loader.start();
     this._explorer.getStructure().subscribe(res => {
-      this.tabs[1].list = res['folders'];
-      this.tabs[2].list = res['trash'];
-      this.tabs[0].list = res['recent'];
+      this.tabs[1].children = res['folders'];
+      this.tabs[2].children = res['trash'];
+      this.tabs[0].children = res['recent'];
       this.loader.stop();
     });
     
@@ -69,6 +91,25 @@ export class AppComponent implements OnInit {
 
   openTab(tab){
     this.tabs.forEach(item => item.open = tab.title !== item.title ? false : !tab.open);
+  }
+
+  doAction(item, action){
+    switch(action){
+      case 'add_file':
+        this._explorer.addFile({ref: '', children: item});
+        break;
+      case 'add_folder':
+        this._explorer.addFolder({ref: '', children: item});
+        break;
+      case 'empty':
+        this._explorer.removeFromTrash();
+        break;
+      default: null;
+    }
+  }
+
+  showOptions(evt, target) {
+    this._contextMenu.showContextMenu(evt, target.options, target.children);
   }
 
   hardReload(){

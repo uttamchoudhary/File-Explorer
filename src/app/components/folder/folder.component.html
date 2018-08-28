@@ -1,21 +1,21 @@
 <ul *ngIf="files" class="folder-structure m-l-15">
     <li *ngFor="let file of files; let index = index">
         <ng-container *ngIf="file.children">
-            <div class="folder" tabindex="0" [myDropTarget]="file" [myDraggable]="file" (click)="file.open=!!!file.open" (contextmenu)="showContextMenu ? showOptions($event, 'folder', file, index) : null">
+            <button type="button" class="folder" [arrow-nav]='file' [myDropTarget]="file" [myDraggable]="file" (click)="file.open=!file.open" (keypress.enter)="file.open=true" (keyup.delete)="deleteHandler(file)" (contextmenu)="showContextMenu ? showOptions($event, 'folder', file, index) : null">
                 <i class="fa fa-folder" aria-hidden="true" [ngClass]="{'fa-folder-open':file.open}"></i>
                 <span class="folder-name" *ngIf="!file.renaming">{{file.title}}</span>
                 <input type="text" [update-item]="file" *ngIf="file.renaming" [value]="file.title">
-            </div>
+            </button>
             <div [hidden]="!file.open">
                 <Folder [files]="file.children" [showContextMenu]="isTrash ? false : showContextMenu" [isTrash]="isTrash" [allowFileOpen]="allowFileOpen"></Folder>
             </div>
         </ng-container>
         <ng-container *ngIf="!file.children">
-            <div class="file" tabindex="0" [myDraggable]="file" (click)="allowFileOpen ? openFile(file) : null" (contextmenu)="showContextMenu ? showOptions($event, 'file', file, index) : null">
+            <button type="button" class="file" arrow-nav [myDraggable]="file" (click)="openFile(file)" (keyup.enter)="openFile(file)" (keyup.delete)="deleteHandler(file)" (contextmenu)="showContextMenu ? showOptions($event, 'file', file, index) : null">
                 <i class="fa fa-file" aria-hidden="true"></i>
                 <span *ngIf="!file.renaming" class="file-name">{{file.file_name}}</span>
                 <input type="text" [update-item]="file" *ngIf="file.renaming" [value]="file.file_name">
-            </div>
+            </button>
         </ng-container>
     </li>
 </ul>

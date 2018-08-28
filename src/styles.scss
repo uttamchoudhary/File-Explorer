@@ -53,6 +53,13 @@
             li.tab {
                 margin-bottom: 16px;
                 .tab-header {
+                    width: 100%;
+                    text-align: left;
+                    margin: 0;
+                    padding: 0;
+                    outline: none;
+                    border: none;
+                    background: transparent;
                     &:focus {
                         background: #007bff;
                         color: #fff;

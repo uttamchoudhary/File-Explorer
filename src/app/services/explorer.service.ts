@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Observable } from "rxjs";
 
 @Injectable({
@@ -11,10 +11,9 @@ export class ExplorerService {
 
   public fileHash: Array<any> = [];
 
-  public folders : Array<any> = [];
-  public trash : Array<any> = [];
-  public recents : Array<any> = [];
-  
+  public folders: Array<any> = [];
+  public trash: Array<any> = [];
+  public recents: Array<any> = [];
 
   private currentHash = '';
   private currentFilePath = '';
@@ -35,30 +34,41 @@ export class ExplorerService {
         observer.next({
           folders: this.folders,
           trash: this.trash,
-          recent : this.recents
-        });  
+          recent: this.recents
+        });
         observer.complete();
-        
+
       } else {
-        this._http.get(this.LONG_JSON).subscribe(
-          (res: any) => {
-            this.folders = res.map((elem, index) => this.formatData(elem, 0, index));
-            localStorage.setItem("FILE_STRUCTURE", JSON.stringify(this.folders));
-            localStorage.setItem("FILE_REF", JSON.stringify(this.fileHash));
-            observer.next({
-              folders: this.folders,
-              trash: this.trash,
-              recent: this.recents
-            });
-            observer.complete();
-          },
-          err => {
-            alert("unable to load files. Please try again");
-            observer.complete();
-          }
-        );
+        this.loadOriginalData().subscribe((res: any) => {
+          this.folders = res.map((elem, index) => this.formatData(elem, 0, index));
+          localStorage.setItem("FILE_STRUCTURE", JSON.stringify(this.folders));
+          localStorage.setItem("FILE_REF", JSON.stringify(this.fileHash));
+          observer.next({
+            folders: this.folders,
+            trash: this.trash,
+            recent: this.recents
+          });
+          observer.complete();
+        })
       }
     });
+  }
+
+  loadOriginalData(){
+    return new Observable(observer => {
+      this._http.get(this.LONG_JSON).subscribe(res => {
+        observer.next(res);
+        observer.complete();
+      },err => {
+          this._http.get('./../../assets/data.json').subscribe(res => {
+            observer.next(res);
+            observer.complete();
+          },err => {
+              alert("No 'Access-Control-Allow-Origin' header is present on the requested resource. Please enable CORS plugin or use some proxy Server to load JSON");
+              observer.complete();
+            });
+        });
+    })
   }
 
   formatData(data, level, index?) {
@@ -70,7 +80,7 @@ export class ExplorerService {
         let result = {};
         if (typeof data[elem] === "object" && data[elem] instanceof Array) {
           result["title"] = elem;
-          result['ref'] =  `${this.currentHash}${results.length}`;
+          result['ref'] = `${this.currentHash}${results.length}`;
           result['file_path'] = this.currentFilePath + elem;
           result["children"] = data[elem];
           this.storeFileHash(data[elem], results.length, elem);
@@ -99,94 +109,94 @@ export class ExplorerService {
   storeFileHash(list, index, folder) {
     let baseRef = this.currentHash + `${index}|children|`
     this.fileHash.push(...list.map((file, index) => {
-        file['ref'] = baseRef + index;
-        file['file_path'] = this.currentFilePath + folder;
-        return {
-          name : file.file_name,
-          ref: baseRef + index,
-          file_path: this.currentFilePath + folder
-        };
-      })
+      file['ref'] = baseRef + index;
+      file['file_path'] = this.currentFilePath + folder;
+      return {
+        name: file.file_name,
+        ref: baseRef + index,
+        file_path: this.currentFilePath + folder
+      };
+    })
     );
   }
 
-  searchFile(file){
+  searchFile(file) {
     let refs = file.ref.split('|');
     let result = this.folders;
     refs.forEach(element => {
-        result = result[element];
-        result instanceof Array ? null : result['open'] = true;
+      result = result[element];
+      result instanceof Array ? null : result['open'] = true;
     });
     return result;
   }
 
-  getParentFolder(item, base){
+  getParentFolder(item, base) {
     let refs = item.ref.split('|');
     let len = refs.length;
-    if(len === 1)
-      return {children: this.folders, ref: ''}
-    
+    if (len === 1)
+      return { children: this.folders, ref: '' }
+
     let parent = base;
-    for(let i=0; i < len-2; i++){
-        parent = parent[refs[i]];
+    for (let i = 0; i < len - 2; i++) {
+      parent = parent[refs[i]];
     }
     return parent;
   }
 
-  delete(item, isExisting){
+  delete(item, isExisting) {
     let refs = item.ref.split('|');
     let len = refs.length;
     let siblings = this.folders;
     let parent;
-    for(let i=0; i < len-1; i++){
+    for (let i = 0; i < len - 1; i++) {
       siblings = siblings[refs[i]];
-      if(i === len-3)
+      if (i === len - 3)
         parent = siblings;
     }
-    if(!parent)
-      parent = {children: this.folders, ref: ''}
+    if (!parent)
+      parent = { children: this.folders, ref: '' }
 
-    let deleted = siblings.splice(+refs[len-1], 1);
+    let deleted = siblings.splice(+refs[len - 1], 1);
     deleted[0]['open'] = false;
     this.updateDataIndexing(parent);
     this.updateFileHash(deleted[0], parent, 'delete');
     isExisting ? this.trash.push(...deleted) : null;
   }
 
-  rename(item, name){
-    if(!item.children){
+  rename(item, name) {
+    if (!item.children) {
       item['file_name'] = name;
       item['type'] = name.split('.').slice(-1);
       this.updateFileHash(item, null, 'file_rename');
-    }else{
+    } else {
       item['title'] = name;
       let paths = item['file_path'].split('/');
-      item['file_path'] = paths.slice(0,paths.length-1).join('/') + `/${name}`;
-      if(item.children.length){
+      item['file_path'] = paths.slice(0, paths.length - 1).join('/') + `/${name}`;
+      if (item.children.length) {
         this.updateFilesPath(item);
       }
       this.updateFileHash(item, this.getParentFolder(item, this.folders), 'folder_rename');
     }
   }
 
-  addFile(parent, file?){
+  addFile(parent, file?) {
     let newFile = file || {
-      file_name : '',
+      file_name: '',
       type: '',
-      file_path: parent.file_path,
-      ref: `${parent.ref}|children|${parent.children.length}`,
+      file_path: parent.file_path || '',
+      ref: parent.ref ? `${parent.ref}|children|${parent.children.length}` : `${parent.children.length}`,
       renaming: true
     }
     parent.children.push(newFile);
     this.updateDataIndexing(parent);
   }
 
-  addFolder(parent, folder?){
+  addFolder(parent, folder?) {
     let newFolder = folder || {
-      title : '',
+      title: '',
       children: [],
-      file_path: parent.file_path,
-      ref: `${parent.ref}|children|0`,
+      file_path: parent.file_path || '',
+      ref: parent.ref ? `${parent.ref}|children|0` : '0',
       renaming: true
     }
     parent['open'] = true;
@@ -194,59 +204,59 @@ export class ExplorerService {
     this.updateDataIndexing(parent);
   }
 
-  restore(item, indexInTrash){
+  restore(item, indexInTrash) {
     let parentInFolders = this.getParentFolder(item, this.folders);
     let indexInFolders = +item.ref.split('|').slice(-1);
     parentInFolders['children'].splice(indexInFolders, 0, item);
-    this.trash.splice(indexInTrash,1);
+    this.trash.splice(indexInTrash, 1);
     this.updateDataIndexing(parentInFolders);
 
     let node = parentInFolders['children'][indexInFolders];
     this.updateFileHash(node, null, 'restore');
   }
 
-  updateDataIndexing(node){
+  updateDataIndexing(node) {
     node.children.forEach((child, index) => {
       child['ref'] = node.ref ? `${node['ref']}|children|${index}` : `${index}`;
-      if(child.children && child.children.length)
+      if (child.children && child.children.length)
         this.updateDataIndexing(child);
     });
   }
 
-  updateRecent(item, noReorder?){
-    if(noReorder)
+  updateRecent(item, noReorder?) {
+    if (noReorder)
       return
-      
+
     let index = this.recents.map(file => file.ref).indexOf(item.ref);
-    index > -1 ? this.recents.splice(index,1) : null;
+    index > -1 ? this.recents.splice(index, 1) : null;
     this.recents.unshift(item);
   }
 
-  updateFilesPath(node){
+  updateFilesPath(node) {
     node.children.forEach((child, index) => {
-      if(child.children){
+      if (child.children) {
         child['file_path'] = `${node['file_path']}/${child['title']}`;
         this.updateFilesPath(child);
-      }else {
+      } else {
         child['file_path'] = `${node['file_path']}`;
       }
     });
   }
 
-  updateFileHash(node, parent, type){
-    switch(type){
-      case 'delete':{
+  updateFileHash(node, parent, type) {
+    switch (type) {
+      case 'delete': {
         let filesToRemove = this.extractFiles(node);
         let newFiles = this.extractFiles(parent);
         let refs = this.fileHash.map(item => item.ref);
         filesToRemove.forEach(file => {
           let index = refs.indexOf(file.ref);
           refs.splice(index, 1);
-          this.fileHash.splice(index,1);
+          this.fileHash.splice(index, 1);
         });
         newFiles.forEach(file => {
           this.fileHash.push({
-            name : file.file_name,
+            name: file.file_name,
             ref: file.ref,
             file_path: file.file_path
           })
@@ -256,30 +266,30 @@ export class ExplorerService {
       case 'file_rename': {
         let file = this.fileHash.filter(item => item.ref === node.ref)[0];
         file ? file.name = node.file_name : this.fileHash.push({
-          name : node.file_name,
+          name: node.file_name,
           ref: node.ref,
           file_path: node.file_path
         });
         break;
       }
-      case 'folder_rename':{
+      case 'folder_rename': {
         let files = this.extractFiles(node.children.length > 0 ? parent : node);
         let refs = this.fileHash.map(item => item.name);
         files.forEach(file => {
           let index = refs.indexOf(file.file_name);
           this.fileHash[index] = {
-            name : file.file_name,
+            name: file.file_name,
             ref: file.ref,
             file_path: file.file_path
           }
         });
         break;
       }
-      case 'restore':{
+      case 'restore': {
         let files = this.extractFiles(node);
         files.forEach(file => {
           this.fileHash.push({
-            name : file.file_name,
+            name: file.file_name,
             ref: file.ref,
             file_path: file.file_path
           });
@@ -290,11 +300,11 @@ export class ExplorerService {
     }
   }
 
-  extractFiles(node){
-    if(!node)
+  extractFiles(node) {
+    if (!node)
       return;
 
-    if(!node.children)
+    if (!node.children)
       return [node]
 
     let list = [];
@@ -305,11 +315,12 @@ export class ExplorerService {
     return list;
   }
 
-  removeFromTrash(indexInTrash?){
-    indexInTrash ? this.trash.splice(indexInTrash,1) : this.trash = [];
+  removeFromTrash(item?) {
+    let index = item && this.trash.map(file => file.ref).indexOf(item.ref);
+    index > -1 ? this.trash.splice(index, 1) : this.trash.splice(0, this.trash.length) ;
   }
 
-  getSuggestion(text){
+  getSuggestion(text) {
     return new Observable(observer => {
       let list = this.fileHash.filter(file => {
         return file.name.toLowerCase().indexOf(text) > -1;
@@ -319,9 +330,11 @@ export class ExplorerService {
     });
   }
 
-  updateStorage(){
-    localStorage.setItem("FILE_STRUCTURE", JSON.stringify(this.folders));
-    localStorage.setItem("FILE_REF", JSON.stringify(this.fileHash));
-    localStorage.setItem("TRASH", JSON.stringify(this.trash));
+  updateStorage() {
+    if (this.folders.length) {
+      localStorage.setItem("FILE_STRUCTURE", JSON.stringify(this.folders));
+      localStorage.setItem("FILE_REF", JSON.stringify(this.fileHash));
+      localStorage.setItem("TRASH", JSON.stringify(this.trash));
+    }
   }
 }

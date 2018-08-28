@@ -23,6 +23,13 @@
         }
         .file,
         .folder {
+            width: 100%;
+            text-align: left;
+            margin: 0;
+            padding: 0;
+            outline: none;
+            border: none;
+            background: transparent;
             &:focus {
                 background: #007bff !important;
                 color: #fff;

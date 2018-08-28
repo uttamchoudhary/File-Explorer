@@ -87,18 +87,28 @@ export class FolderComponent implements OnInit {
         this._explorer.restore(item, this.currentIndex);
       break;
       case 'remove_perm':
-        this._explorer.removeFromTrash(this.currentIndex);
+        this._explorer.removeFromTrash(item);
         break;
       default: null;
     }
   }
 
+  deleteHandler(item){
+    if(this.isTrash && this.showContextMenu){
+      this.doAction(item, 'remove_perm')
+    }else if(this.showContextMenu){
+      this.doAction(item, 'delete')
+    }
+  } 
+
   openFile(file) {
-    this._broadcast.publish({
-      type: "OPEN_FILE",
-      file: file
-    });
-    this._explorer.updateRecent(file, !this.isTrash && !this.showContextMenu);
+    if(this.allowFileOpen){
+      this._broadcast.publish({
+        type: "OPEN_FILE",
+        file: file
+      });
+      this._explorer.updateRecent(file, !this.isTrash && !this.showContextMenu);
+    }
   }
 
   showOptions(evt, type, file, index?) {

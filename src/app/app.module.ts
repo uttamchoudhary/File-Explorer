@@ -14,6 +14,7 @@ import { SearchComponent } from './components/search/search.component';
 import { UpdateItemDirective } from './directives/update-item.directive';
 import { DraggableDirective } from './directives/draggable.directive';
 import { DropTargetDirective } from './directives/drop-target.directive';
+import { ArrowNavigationDirective } from './directives/arrow-navigation.directive';
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import { DropTargetDirective } from './directives/drop-target.directive';
     SearchComponent,
     UpdateItemDirective,
     DraggableDirective,
-    DropTargetDirective
+    DropTargetDirective,
+    ArrowNavigationDirective
   ],
   imports: [
     BrowserModule,
