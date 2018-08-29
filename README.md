@@ -14,7 +14,7 @@ File Explorer is psuedo file browser implemented in Angular6. Purpose for this p
 * Indexing for every file on rename/delete/add operations
 * Preserve State of Explorer and Trash from last session, State is preserved even after       page reload/close tab/back button.
 * Button is provided to disable state preserveness and load fresh data from server.
-* Fully Keyboard 
+* Fully Keyboard accessible
 
 ## Demo:
 
